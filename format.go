@@ -39,32 +39,32 @@ func (r *FormatRules) floatFormat() byte {
 	return 'f'
 }
 
-func format(value any, rules *FormatRules) string {
-	t := reflect.TypeOf(value)
-	return "<" + t.String() + "> " + formatValue(t.Kind(), value, rules)
-}
-
-func formatValue(kind reflect.Kind, value any, rules *FormatRules) string {
-	switch kind {
+// Format a value of any type with given FormatRules.
+func (r *FormatRules) Format(value any) string {
+	switch reflect.TypeOf(value).Kind() {
 	case reflect.Int,
 		reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return strconv.FormatInt(int64(value.(int)), rules.IntBase)
+		return strconv.FormatInt(int64(value.(int)), r.IntBase)
 
 	case reflect.Uint,
 		reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return strconv.FormatUint(uint64(value.(uint)), rules.IntBase)
+		return strconv.FormatUint(uint64(value.(uint)), r.IntBase)
 
 	case reflect.Float32:
 		return strconv.FormatFloat(
 			float64(value.(float32)),
-			rules.floatFormat(), rules.FloatPrecision, 32,
+			r.floatFormat(), r.FloatPrecision, 32,
 		)
 
 	case reflect.Float64:
 		return strconv.FormatFloat(
 			value.(float64),
-			rules.floatFormat(), rules.FloatPrecision, 64,
+			r.floatFormat(), r.FloatPrecision, 64,
 		)
 	}
 	return fmt.Sprint(value)
+}
+
+func format(value any, rules *FormatRules) string {
+	return "<" + reflect.TypeOf(value).String() + "> " + rules.Format(value)
 }
