@@ -31,6 +31,14 @@ const (
 	FloatPrecisionMicro   = 6
 )
 
+// Parse parameter for strconv.FormatFloat from a FormatRules instance.
+func (r *FormatRules) floatFormat() byte {
+	if r.FloatScientificNotation {
+		return 'e'
+	}
+	return 'f'
+}
+
 func format(value any, rules *FormatRules) string {
 	t := reflect.TypeOf(value)
 	return "<" + t.String() + "> " + formatValue(t.Kind(), value, rules)
@@ -49,23 +57,14 @@ func formatValue(kind reflect.Kind, value any, rules *FormatRules) string {
 	case reflect.Float32:
 		return strconv.FormatFloat(
 			float64(value.(float32)),
-			resolveFloatFormat(rules.FloatScientificNotation),
-			rules.FloatPrecision, 32,
+			rules.floatFormat(), rules.FloatPrecision, 32,
 		)
 
 	case reflect.Float64:
 		return strconv.FormatFloat(
 			value.(float64),
-			resolveFloatFormat(rules.FloatScientificNotation),
-			rules.FloatPrecision, 64,
+			rules.floatFormat(), rules.FloatPrecision, 64,
 		)
 	}
 	return fmt.Sprint(value)
-}
-
-func resolveFloatFormat(scientificNotation bool) byte {
-	if scientificNotation {
-		return 'e'
-	}
-	return 'f'
 }
