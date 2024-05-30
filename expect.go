@@ -30,13 +30,18 @@ func (t *TestHandler) Expect(actual any) *ExpectHandler {
 	}
 }
 
+var prefix = len("expect.go:36: ")
+
+func (e *ExpectHandler) Error(message string) {
+	e.tester.Error(backspace(prefix), message)
+}
+
 func (e *ExpectHandler) ToBe(expect any) {
 	position := Trace(2)
 	if e.handler != expect {
-		e.tester.Error(
-			yellow(position.String())+dim(":"),
-			dim("Expect:"), green(format(expect, e.rules)),
-			dim("but get:"), red(format(e.handler, e.rules)),
+		e.Error(yellow(position.String()) +
+			dim(": Expect: ") + green(format(expect, e.rules)) +
+			dim(", but get: ") + red(format(e.handler, e.rules)),
 		)
 	}
 }
