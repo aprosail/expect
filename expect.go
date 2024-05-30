@@ -1,7 +1,6 @@
 package expect
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -23,8 +22,8 @@ func (e *ExpectHandler) ToBe(expect any) {
 	if e.handler != expect {
 		e.tester.Error(
 			yellow(position.String())+dim(":"),
-			dim("Expect:"), green(fmt.Sprint(expect)),
-			dim("but get:"), red(fmt.Sprint(e.handler)),
+			dim("Expect:"), green(format(expect)),
+			dim("but get:"), red(format(e.handler)),
 		)
 	}
 }
