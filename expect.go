@@ -2,16 +2,13 @@ package expect
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 )
 
-type TestHandler struct {
-	tester *testing.T
-}
+type TestHandler struct{ tester *testing.T }
 
-func Init(t *testing.T) *TestHandler {
-	return &TestHandler{tester: t}
-}
+func Init(t *testing.T) *TestHandler { return &TestHandler{tester: t} }
 
 type ExpectHandler struct {
 	tester  *testing.T
@@ -23,8 +20,10 @@ func (t *TestHandler) Expect(actual any) *ExpectHandler {
 }
 
 func (e *ExpectHandler) ToBe(expect any) {
+	position := Trace(2)
 	if e.handler != expect {
 		e.tester.Error(
+			yellow(position.File)+dim(":"+strconv.Itoa(position.Line)+":"),
 			dim("Expect:"), green(fmt.Sprint(expect)),
 			dim("but get:"), red(fmt.Sprint(e.handler)),
 		)
