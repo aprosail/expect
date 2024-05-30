@@ -31,17 +31,14 @@ const (
 	FloatPrecisionMicro   = 6
 )
 
-// Parse parameter for strconv.FormatFloat from a FormatRules instance.
-func (r *FormatRules) floatFormat() byte {
-	if r.FloatScientificNotation {
-		return 'e'
-	}
-	return 'f'
-}
-
 // Format a value of any type with given FormatRules.
 func (r *FormatRules) Format(value any) string {
-	switch reflect.TypeOf(value).Kind() {
+	return r.lazyFormat(value, reflect.TypeOf(value).Kind())
+}
+
+// Avoid repeat getting reflect kind for the value.
+func (r *FormatRules) lazyFormat(value any, kind reflect.Kind) string {
+	switch kind {
 	case reflect.Int,
 		reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return strconv.FormatInt(int64(value.(int)), r.IntBase)
@@ -67,4 +64,12 @@ func (r *FormatRules) Format(value any) string {
 
 func format(value any, rules *FormatRules) string {
 	return "<" + reflect.TypeOf(value).String() + "> " + rules.Format(value)
+}
+
+// Parse parameter for strconv.FormatFloat from a FormatRules instance.
+func (r *FormatRules) floatFormat() byte {
+	if r.FloatScientificNotation {
+		return 'e'
+	}
+	return 'f'
 }
