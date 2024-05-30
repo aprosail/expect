@@ -8,7 +8,7 @@ import (
 
 func format(value any) string {
 	t := reflect.TypeOf(value)
-	return fmt.Sprint("<"+t.String()+">", formatValue(t.Kind(), value))
+	return "<" + t.String() + "> " + formatValue(t.Kind(), value)
 }
 
 func formatValue(kind reflect.Kind, value any) string {
