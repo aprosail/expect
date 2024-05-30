@@ -2,7 +2,6 @@ package expect
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
 )
 
@@ -23,7 +22,7 @@ func (e *ExpectHandler) ToBe(expect any) {
 	position := Trace(2)
 	if e.handler != expect {
 		e.tester.Error(
-			yellow(position.File)+dim(":"+strconv.Itoa(position.Line)+":"),
+			yellow(position.String())+dim(":"),
 			dim("Expect:"), green(fmt.Sprint(expect)),
 			dim("but get:"), red(fmt.Sprint(e.handler)),
 		)
