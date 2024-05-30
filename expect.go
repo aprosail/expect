@@ -10,10 +10,10 @@ type TestHandler struct {
 }
 
 func Init(tester *testing.T, rules *FormatRules) *TestHandler {
-	return &TestHandler{
-		tester: tester,
-		rules:  rules,
+	if rules == nil {
+		rules = GlobalFormatRules
 	}
+	return &TestHandler{tester: tester, rules: rules}
 }
 
 type ExpectHandler struct {
